@@ -1,7 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;; THEME MANAGEMENT ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *bsc-themes-by-darkness* '(bsc-white      ; default colours, lightly modified
-                                   leuven         ; GOOD
+(defvar *bsc-themes-by-darkness* '(leuven         ; GOOD
                                    whiteboard
                                    dichromacy     ; FAVOURITE  (white bg, high contrast)
                                    moe-light      ; FAVOURITE (pale bg, cute colours)
