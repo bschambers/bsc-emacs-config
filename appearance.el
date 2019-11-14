@@ -55,6 +55,9 @@
 
 (eval-after-load 'moe-light-theme
   (lambda ()
+    (face-spec-set 'region '((t :inherit unspecified
+                                :foreground unspecified
+                                :background "yellow")))
     (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
                                          :background "#fdfde7")))
     (face-spec-set 'hl-line '((t :inherit unspecified
