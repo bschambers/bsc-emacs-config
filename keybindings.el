@@ -86,7 +86,9 @@
    ("t" bsc-set-global-text-size "global text size")
    ("h" bsc-substitute-html-entities "substitute html entities")
    ("i" bsc-insert-time "insert time")
-   ("w" delete-trailing-whitespace "delete whitespace")))
+   ("w" delete-trailing-whitespace "delete whitespace")
+   ("T" bsc-insert-tag "insert sgml tag")
+   ("W" bsc-wrap-markup "wrap in sgml tag")))
 
 (defhydra hydra-toggle (:color blue)
     "toggle"

@@ -29,23 +29,6 @@
   (global-company-mode t)     ; activate company everywhere
   (company-quickhelp-mode t)) ; enable documentation popups
 
-(use-package smartparens
-  :ensure t
-  :config
-  (smartparens-global-mode)
-  (sp-use-smartparens-bindings)
-  (sp-local-pair 'java-mode "/**" "*/")
-  ;; disable single quote for lisp modes
-  (sp-local-pair
-   '(lisp-mode emacs-lisp-mode slime-mode slime-repl-mode inferior-emacs-lisp-mode) "'" ""))
-
-;; learn to use smartparens better...
-; "C-M-u" backward-up
-; "C-M-n" forward-up
-; "M-S" splice-sexp-killing-backward
-; "M-R" raise-sexp
-;
-
 ;; completion framework
 (use-package ivy
   :ensure t
@@ -143,6 +126,32 @@
 ;; interface to external debuggers
 (use-package realgud
   :ensure t)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;; SMARTPARENS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'smartparens)
+;; (setq sp-navigate-reindent-after-up nil)
+(smartparens-global-mode 1)
+(show-smartparens-global-mode 1)
+(sp-use-smartparens-bindings)
+
+(sp-with-modes sp--lisp-modes
+  ;; disable ', it's the quote character!
+  (sp-local-pair "'" nil :actions nil)
+  ;; also only use the pseudo-quote inside strings where it serve as
+  ;; hyperlink.
+  (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p))
+  (sp-local-pair "`" nil
+                 :skip-match (lambda (ms mb me)
+                               (cond
+                                ((equal ms "'")
+                                 (or (sp--org-skip-markup ms mb me)
+                                     (not (sp-point-in-string-or-comment))))
+                                (t (not (sp-point-in-string-or-comment)))))))
+
+(sp-local-pair 'java-mode "/**" "*/")
 
 
 
@@ -483,3 +492,8 @@ Returns non-nil if A comes before B."
 ;; graded one minute typing test
 (use-package typit
   :ensure t)
+
+(eval-after-load 'typit
+  (progn
+    ;; (setq typit--literature-file "swift-polite-conversation.txt")
+    (setq typit-test-time 15)))
