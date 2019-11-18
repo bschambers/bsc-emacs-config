@@ -74,7 +74,8 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-global-mode)) ;; enable C-c p commands globally
+  (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 ;; use ivy/counsel for projectile completion
 (use-package counsel-projectile
@@ -492,8 +493,3 @@ Returns non-nil if A comes before B."
 ;; graded one minute typing test
 (use-package typit
   :ensure t)
-
-(eval-after-load 'typit
-  (progn
-    ;; (setq typit--literature-file "swift-polite-conversation.txt")
-    (setq typit-test-time 15)))
