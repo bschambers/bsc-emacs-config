@@ -64,11 +64,11 @@
   :ensure t
   :bind (("M-z" . avy-zap-to-char)))
 
-;; switch window rapidly like ace-jump-mode or avy
-;; ... use with C-u prefix to swap window with current one
+;; swap buffers between two windows i.e. transpose windows
+;; ... also see: ace-delete-window & ace-window
 (use-package ace-window
   :ensure t
-  :bind (("C-c w" . ace-window)))
+  :bind (("C-c w" . ace-swap-window)))
 
 ;; simple project-management
 (use-package projectile
