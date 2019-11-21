@@ -9,7 +9,7 @@
   :config
   (setq guide-key/guide-key-sequence
         '("C-h"
-          "C-x r" "C-x n" "C-x v" "C-x 4" "C-x 5" "C-x 6" "C-x 8"
+          "C-x n" "C-x p" "C-x r" "C-x v" "C-x 4" "C-x 5" "C-x 6" "C-x 8"
           "C-c"
           "C-S-c"
           "M-o"
@@ -77,7 +77,7 @@
   :ensure t)
 
 (global-set-key
- (kbd "M-1")
+ (kbd "C-c f")
  (defhydra hydra-bsc-favourites (:color blue)
    "misc favourites"
    ("a" align-regexp "align regexp")
@@ -95,15 +95,16 @@
     ("d" toggle-debug-on-error "debug on error")
     ("f" auto-fill-mode "auto-fill")
     ("m" bsc-toggle-use-meghanada "use meghanada")
-    ("n" nameless-mode "nameless-mode")
+    ("n" nameless-mode "nameless mode")
     ("t" toggle-truncate-lines "truncate lines")
     ("r" rectangle-mark-mode "rectangle mark")
     ("p" smartparens-global-mode "smartparens")
     ("y" yas-global-mode "yasnippet")
     ("w" global-subword-mode "subword mode")
-    ("SPC" whitespace-mode "whitespace mode"))
+    ("SPC" whitespace-mode "whitespace mode")
+    ("l" minibuffer-line-mode "minibuffer-line"))
 
-(global-set-key (kbd "C-x t") 'hydra-toggle/body)
+(global-set-key (kbd "C-c t") 'hydra-toggle/body)
 
 (defhydra hydra-apropos (:color blue
                          :hint nil)
@@ -134,7 +135,7 @@ _v_ariable       _u_ser-option
    ("q" nil "quit")))
 
 (global-set-key
- (kbd "C-c m")
+ (kbd "C-c s")
  (defhydra hydra-window-splitter (:color red)
   "window splitter"
   ("<left>" hydra-move-splitter-left "left")
