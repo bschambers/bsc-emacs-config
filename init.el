@@ -1,9 +1,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;; MASTER INIT FILE ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; does some preliminary things, then loads all the other config files
+
+
+
 ;; streamline frame in GUI mode
 ;; do this first, to prevent them from momentarily showing during startup
 (tool-bar-mode -1) ; hide tool bar
 (menu-bar-mode -1) ; hide menu bar (press f10 to pop up menu)
+
+;; prevent customize from littering despoiling my init file
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
 ;; package and use-package are needed for practically everything else
 (require 'package)
@@ -19,6 +27,12 @@
 (dotimes (n 10)
   (global-unset-key (kbd (format "C-%d" n)))
   (global-unset-key (kbd (format "M-%d" n))))
+
+;;; risky commands enabled
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 
 
@@ -40,3 +54,6 @@
 
 ;; anything else...
 (load-file (concat bsc-init-dir "misc.el"))
+
+;; private stuff: email config etc
+(load-file "~/.emacs.d/init-private/init-private.el")

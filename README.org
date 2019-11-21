@@ -1,24 +1,17 @@
-* My emacs configuration
+* B. S. Chambers - my emacs configuration
 
-My init file is stored here:
+The default init file is here:
 
 #+BEGIN_SRC elisp
 ~/.emacs.d/init.el
 #+END_SRC
 
-Stuff created by CUSTOMISE and other automatic emacs stuff gets put in here.
-
-At the bottom I put in a couple of lines like this to load my custom config
-files, which are stored in two sub-directories.
+It contains only one line - to load my actual init file, which is stored in a
+version controlled directory:
 
 #+BEGIN_SRC elisp
-;; general setup
-(load-file "~/.emacs.d/init-bsc/init.el")
-
-;; private things such as email config
-(load-file "~/.emacs.d/init-bsc-private/init-private.el")
+(load-file "~/.emacs.d/init/init.el")
 #+END_SRC
 
-First, all general config is run - that's what is in this repository.
-
-The second line loads any private config e.g. email setup.
+This file loads all of the other config files, and also loads another file which
+does private config (email setup etc) and is not under version control.
