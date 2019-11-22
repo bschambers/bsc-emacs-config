@@ -15,8 +15,7 @@
           "C-c"
           "C-S-c"
           "M-o"
-          "M-s"
-          ))
+          "M-s"))
   (guide-key-mode 1)
   (setq guide-key/recursive-key-sequence-flag t)
   (setq guide-key/popup-window-position 'bottom))
@@ -44,6 +43,16 @@
 
 ;; useful for navigating files and directories
 (global-set-key (kbd "<f8>") 'speedbar)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;; ADDITIONAL HELP KEYS ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-set-key (kbd "C-h r") 'describe-char)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;; LAPTOP KEYBOARD FIXES ;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; for US keyboard layout (without pound sterling symbol)
 (defun bsc-insert-pound-sign () (interactive) (insert "£"))
