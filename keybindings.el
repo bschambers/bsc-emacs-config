@@ -182,7 +182,7 @@ _v_ariable       _u_ser-option
 
 (defun hydra-move-splitter-down (arg)
   "Move window splitter down."
-  (interactive p)
+  (interactive "p")
   (if (let ((windmove-wrap-around))
         (windmove-find-other-window 'up))
       (shrink-window arg)
