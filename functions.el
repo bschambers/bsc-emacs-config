@@ -72,6 +72,30 @@ Operates on region bounded by rStart and rEnd."
   (indent-for-tab-command)
   (insert text))
 
+(defvar bsc-nonstandard-symbol-substitution-table (make-hash-table :test 'equal))
+(puthash "“" "\"" bsc-nonstandard-symbol-substitution-table)
+(puthash "”" "\"" bsc-nonstandard-symbol-substitution-table)
+(puthash "‘" "'" bsc-nonstandard-symbol-substitution-table)
+(puthash "’" "'" bsc-nonstandard-symbol-substitution-table)
+(puthash " " "_" bsc-nonstandard-symbol-substitution-table)
+(puthash "…" "..." bsc-nonstandard-symbol-substitution-table) ; elipsis
+(puthash "–" "-" bsc-nonstandard-symbol-substitution-table)
+(puthash "—" "-" bsc-nonstandard-symbol-substitution-table)
+(puthash "é" "e" bsc-nonstandard-symbol-substitution-table) ; acute accent
+(puthash "è" "e" bsc-nonstandard-symbol-substitution-table) ; grave accent
+(puthash "⁂" "*" bsc-nonstandard-symbol-substitution-table)
+(puthash "Æ" "AE" bsc-nonstandard-symbol-substitution-table)
+;; (puthash "_" "" bsc-nonstandard-symbol-substitution-table)
+
+(defun bsc-substitute-nonstandard-symbols (rStart rEnd)
+  "Substitutes non-standard characters in region with their
+ascii equivalents.
+
+Character and replacement definitions taken from
+bsc-nonstandard-symbol-substitution-table."
+  (interactive "r")
+  (bsc-substitute-from-hash bsc-nonstandard-symbol-substitution-table rStart rEnd))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; SEPARATOR COMMENTS ;;;;;;;;;;;;;;;;;;;;;;;;;
