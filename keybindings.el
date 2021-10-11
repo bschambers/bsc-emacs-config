@@ -7,6 +7,7 @@
 
 ;; guide-key pops up a list of keybindings after 1 second for the specified prefix keys
 (use-package guide-key
+  :disabled
   :ensure t
   :config
   (setq guide-key/guide-key-sequence
@@ -71,8 +72,11 @@
 ;;;;;;;;;;;;;;;;;;;;; MODE-SPECIFIC KEYBINDINGS ;;;;;;;;;;;;;;;;;;;;;;
 
 ;; default keybinding M-<tab> is overridden by operating system
-(eval-after-load 'calc-mode
+(eval-after-load 'calc
   '(define-key calc-mode-map (kbd "C-<tab>") 'calc-roll-up))
+
+(eval-after-load 'outline
+  '(define-key outline-minor-mode-map (kbd "<f9>") 'outline-toggle-children))
 
 
 
@@ -103,17 +107,21 @@
 
 (defhydra hydra-toggle (:color blue)
     "toggle"
+    ("c" company-mode "auto-completion")
+    ("C" global-company-mode "global auto-completion")
     ("d" toggle-debug-on-error "debug on error")
-    ("f" auto-fill-mode "auto-fill")
-    ("m" bsc-toggle-use-meghanada "use meghanada")
+    ("w" global-subword-mode "subword mode")
+    ("SPC" whitespace-mode "whitespace mode")
+    ("l" global-linum-mode "line numbers")
     ("n" nameless-mode "nameless mode")
+    ("f" auto-fill-mode "auto-fill")
     ("t" toggle-truncate-lines "truncate lines")
     ("r" rectangle-mark-mode "rectangle mark")
     ("p" smartparens-global-mode "smartparens")
+    ("o" outline-minor-mode "outline-minor-mode")
     ("y" yas-global-mode "yasnippet")
-    ("w" global-subword-mode "subword mode")
-    ("SPC" whitespace-mode "whitespace mode")
-    ("l" minibuffer-line-mode "minibuffer-line"))
+    ("m" minibuffer-line-mode "minibuffer-line")
+    ("M" bsc-toggle-use-meghanada "use meghanada"))
 
 (global-set-key (kbd "C-c t") 'hydra-toggle/body)
 
