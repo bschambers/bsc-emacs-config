@@ -1,4 +1,4 @@
-* B. S. Chambers - my emacs configuration
+* B. S. Tancham - my emacs configuration
 
 The default init file is here:
 

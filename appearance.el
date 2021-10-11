@@ -11,6 +11,7 @@
                                    tango-dark
                                    flatland
                                    tsdh-dark      ; GOOD
+                                   material
                                    monokai        ; GOOD (TODO: selection/hl-line)
                                    dracula        ; GOOD (purplish) (TODO: selection)
                                    deeper-blue    ; GOOD (TODO: selection/hl-line)
@@ -55,9 +56,9 @@
 
 (eval-after-load 'moe-light-theme
   (lambda ()
-    (face-spec-set 'region '((t :inherit unspecified
-                                :foreground unspecified
-                                :background "yellow")))
+    ;; (face-spec-set 'region '((t :inherit unspecified
+    ;;                             :foreground unspecified
+    ;;                             :background "yellow")))
     (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
                                          :background "#fdfde7")))
     (face-spec-set 'hl-line '((t :inherit unspecified
@@ -65,9 +66,9 @@
 
 (eval-after-load 'moe-dark-theme
   (lambda ()
-    (face-spec-set 'region '((t :inherit unspecified
-                                :foreground unspecified
-                                :background "#224455")))
+    ;; (face-spec-set 'region '((t :inherit unspecified
+    ;;                             :foreground unspecified
+    ;;                             :background "#224455")))
     (face-spec-set 'minibuffer-line '((t :foreground "#ff4ea3"
                                          :background "#303030")))
     (face-spec-set 'hl-line '((t :inherit unspecified
@@ -78,10 +79,24 @@
     (face-spec-set
      'hl-line '((t :background "white")))))
 
+;;(load-theme 'cyberpunk)
+
 ;; load theme on startup
-(load-theme 'cyberpunk)
+;; light or dark theme depending on time of day
+;; TODO: maybe measure light level from webcam
 
-
+;; load light or dark theme based on time of day
+(let ((hour (string-to-number (format-time-string "%H"))))
+  (if
+      (and (>= hour 6) (< hour 18))
+      ;; day time
+      (progn
+        (message "day time: loading light theme")
+        (load-theme 'dichromacy))
+    ;; night time
+    (progn
+      (message "night time: loading dark theme")
+      (load-theme 'cyberpunk))))
 
 ;;;;;;;;;;;;;;;;;;; MISC APPEARANCE RELATED THINGS ;;;;;;;;;;;;;;;;;;;
 
@@ -91,15 +106,11 @@
 
 (show-paren-mode) ; hilights matching parentheses
 
+(require 'fill-column-indicator)
+
 ;; keep track of the cursor, but not in terminal mode because it tends to
 ;; obscure the text of the current line
 (if (display-graphic-p) ; returns nil if running in terminal mode
     (progn
       ;; hilight line where the active cursor is
       (global-hl-line-mode 1)))
-
-;; ;; TODO:
-;; (use-package powerline
-;;   :ensure t
-;;   :config
-;;   (powerline-default-theme))
