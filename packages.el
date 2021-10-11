@@ -27,7 +27,9 @@
   :ensure t
   :config
   (global-company-mode t)     ; activate company everywhere
-  (company-quickhelp-mode t)) ; enable documentation popups
+  ;; DISABLED company-quickhelp-mode because triggers debugger every time
+  ;(company-quickhelp-mode t) ; enable documentation popups
+  )
 
 ;; completion framework
 (use-package ivy
@@ -154,6 +156,9 @@
 
 (sp-local-pair 'java-mode "/**" "*/")
 
+(sp-local-pair 'python-mode "\"\"\"" "\"\"\"")
+(sp-local-pair 'python-mode "'''" "'''")
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; LISP PROGRAMING ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -165,6 +170,7 @@
 ;; EMACS LISP
 ;; Use nameless to simulate namespaces in elisp
 (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
+(add-hook 'emacs-lisp-mode-hook 'fci-mode)
 
 ;; COMMON LISP (and SLIME)
 ;; Installation instructions quicklisp, slime and ccl in:
@@ -210,13 +216,28 @@
             ;; (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)
             ))
 
+(add-hook 'java-mode-hook 'fci-mode)
+
 ;; javadoc-lookup
 (global-set-key (kbd "C-h j") 'javadoc-lookup)
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;; PYTHON PROGRAMMING ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package elpy
+     :ensure t
+     :disabled
+     :setup
+     (elpy-enable))
+
+(add-hook 'python-mode-hook 'fci-mode)
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;; MISC PROGRAMMING ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; WEB MODE
 ;; major mode which can mix html, php, and various other web languages...
 (use-package web-mode
   :ensure t
@@ -244,6 +265,9 @@
 ;; automatically use scala mode for editing files with .scala suffix
 (setq auto-mode-alist (append '(("\\.scala$" . scala-mode)) auto-mode-alist))
 
+;; OCTAVE/MATLAB
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ORG MODE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -258,7 +282,8 @@
   (add-hook 'org-shiftleft-final-hook  'windmove-left)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
   ;; enable code-block execution
-  (require 'ob-sh) ; used for org babel code snippets
+  ;; (require 'ob-sh) ; used for org babel code snippets
+  (require 'ob-shell) ; used for org babel code snippets
   (require 'ob-kotlin)
   (org-babel-do-load-languages
    'org-babel-load-languages '((C . t)
@@ -377,6 +402,23 @@ _y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?"
   (dolist (record records)
     (bbdb-add-mail-alias record alias nil)))
 
+;; (defun bsc-bbdb--month-str-to-number (month-str)
+;;   (let ((str (downcase month-str))
+;;         (return-val 0))
+;;       (if (equal str "jan") (setq return-val 1))
+;;       (if (equal str "feb") (setq return-val 2))
+;;       (if (equal str "mar") (setq return-val 3))
+;;       (if (equal str "apr") (setq return-val 4))
+;;       (if (equal str "may") (setq return-val 5))
+;;       (if (equal str "jun") (setq return-val 6))
+;;       (if (equal str "jul") (setq return-val 7))
+;;       (if (equal str "aug") (setq return-val 8))
+;;       (if (equal str "sep") (setq return-val 9))
+;;       (if (equal str "oct") (setq return-val 10))
+;;       (if (equal str "nov") (setq return-val 11))
+;;       (if (equal str "dec") (setq return-val 12))
+;;       return-val))
+
 (defun bsc--month-str-to-number (month-str)
   (let ((str (downcase month-str))
         (return-val 0))
@@ -428,7 +470,8 @@ Returns non-nil if A comes before B."
                      'bsc-bbdb--sort-by-dob-ignore-year
                      (bbdb-search (bbdb-records) :xfield (cons 'dob ".+"))))
            (time-str (current-time-string))
-           (current-month (bsc-bbdb--month-str-to-number (substring time-str 4 7)))
+           ;; (current-month (bsc-bbdb--month-str-to-number (substring time-str 4 7)))
+           (current-month (bsc--month-str-to-number (substring time-str 4 7)))
            (current-day (string-to-number (substring time-str 8 10)))
            (current-position 0))
 
@@ -493,3 +536,11 @@ Returns non-nil if A comes before B."
 ;; graded one minute typing test
 (use-package typit
   :ensure t)
+
+(defun typit ()
+  (interactive)
+  (ivy-read "Which kind of typing test:? "
+            '(typit-basic-test
+              typit-advanced-test
+              typit-from-file)
+            :action (lambda (x) (funcall (intern x)))))
