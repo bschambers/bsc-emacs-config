@@ -235,6 +235,28 @@
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;; ARDUINO PROGRAMMING ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; NOTE: arduino-cli-mode is kind of broken at the moment
+;;;; - LIST BOARDS works ok but COMPILE & UPLOAD don't
+
+(defhydra hydra-arduino (:color blue)
+  "arduino cli"
+  ("c" arduino-cli-compile "compile")
+  ("u" arduino-cli-upload "upload")
+  ("l" arduino-cli-board-list "list boards"))
+
+(use-package arduino-cli-mode
+  :ensure t
+  ;; :hook arduino-mode
+  :mode "\\.ino\\'"
+  :bind (("C-c a" . hydra-arduino/body))
+  :custom
+  (arduino-cli-warnings 'all)
+  (arduino-cli-verify t))
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;; MISC PROGRAMMING ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; WEB MODE
@@ -267,6 +289,11 @@
 
 ;; OCTAVE/MATLAB
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+;; JAVASCRIPT
+(use-package js
+  :config
+  (setf js-indent-level 2))
 
 
 
