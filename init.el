@@ -11,6 +11,9 @@
 
 ;; prevent customize from littering despoiling my init file
 (setq custom-file "~/.emacs.d/custom.el")
+;; if it doesn't already exist then create it
+(unless (file-exists-p custom-file)
+  (write-region "" nil custom-file))
 (load custom-file)
 
 ;; package and use-package are needed for practically everything else
@@ -18,6 +21,8 @@
 ;; add package repositories
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize) ; required before use-package will work
+;; use package is great because it will automatically fetch and
+;; install packages which are not already present
 (require 'use-package)
 
 ;; unset C- and M- digit keys
@@ -56,4 +61,6 @@
 (load-file (concat bsc-init-dir "misc.el"))
 
 ;; private stuff: email config etc
-(load-file "~/.emacs.d/init-private/init-private.el")
+(let ((private-init-file "~/.emacs.d/init-private/init-private.el"))
+  (if (file-exists-p private-init-file)
+      (load-file private-init-file)))

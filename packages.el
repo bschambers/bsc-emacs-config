@@ -8,6 +8,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; VARIOUS PACKAGES ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; use hydra to define mini keymaps, with hinting and several other neat
+;; features
+(use-package hydra
+  :ensure t)
+
 (use-package shrink-whitespace
   :ensure t
   :bind (("M-\\" . shrink-whitespace)
@@ -134,11 +139,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; SMARTPARENS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'smartparens)
-;; (setq sp-navigate-reindent-after-up nil)
-(smartparens-global-mode 1)
-(show-smartparens-global-mode 1)
-(sp-use-smartparens-bindings)
+(use-package smartparens
+  :ensure t
+  :config
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode 1)
+  (sp-use-smartparens-bindings))
 
 (sp-with-modes sp--lisp-modes
   ;; disable ', it's the quote character!
@@ -169,6 +175,8 @@
 
 ;; EMACS LISP
 ;; Use nameless to simulate namespaces in elisp
+(use-package nameless
+  :ensure t)
 (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
 (add-hook 'emacs-lisp-mode-hook 'fci-mode)
 
@@ -189,8 +197,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; JAVA PROGRAMMING ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'gradle-mode)
-(require 'meghanada)
+(use-package gradle-mode
+  :ensure t)
+
+(use-package meghanada
+  :ensure t)
 
 ;; If non-nil meghanada-mode will be started with java-mode
 (setq bsc-use-meghanada t)
@@ -313,13 +324,14 @@
   (require 'ox-org)
   ;; enable code-block execution
   (require 'ob-shell) ; used for org babel shell code snippets
-  (require 'ob-kotlin)
+  ;;(require 'ob-kotlin)
   (org-babel-do-load-languages
    'org-babel-load-languages '((C . t)
                                (shell . t)
                                (java . t)
                                (python . t)
-                               (kotlin . t)))
+                               ;;(kotlin . t)
+			       ))
   ;; directory for notes.org
   (setq org-directory "~/.emacs.d/org")
   (setq org-default-notes-file (concat org-directory "/notes.org"))

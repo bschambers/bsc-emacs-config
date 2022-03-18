@@ -82,14 +82,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; SOME HYDRAS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; use hydra to define mini keymaps, with hinting and several other neat
-;; features
-
 ;; most of these borrowed or adapted from the hydra example file, or various web
 ;; articles
-
-(use-package hydra
-  :ensure t)
 
 (global-set-key
  (kbd "C-c f")

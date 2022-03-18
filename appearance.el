@@ -1,5 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;; THEME MANAGEMENT ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package cyberpunk-theme
+  :ensure t)
+
 (defvar *bsc-themes-by-darkness* '(leuven         ; GOOD
                                    whiteboard
                                    dichromacy     ; FAVOURITE  (white bg, high contrast)
@@ -106,7 +109,8 @@
 
 (show-paren-mode) ; hilights matching parentheses
 
-(require 'fill-column-indicator)
+(use-package fill-column-indicator
+  :ensure t)
 
 ;; keep track of the cursor, but not in terminal mode because it tends to
 ;; obscure the text of the current line
