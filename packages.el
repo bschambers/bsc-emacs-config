@@ -308,9 +308,11 @@
   (add-hook 'org-shiftdown-final-hook  'windmove-down)
   (add-hook 'org-shiftleft-final-hook  'windmove-left)
   (add-hook 'org-shiftright-final-hook 'windmove-right)
+  ;; require org-export to be loaded, otherwise my custom export backend
+  ;; definitions will cause an error on org-mode startup
+  (require 'ox-org)
   ;; enable code-block execution
-  ;; (require 'ob-sh) ; used for org babel code snippets
-  (require 'ob-shell) ; used for org babel code snippets
+  (require 'ob-shell) ; used for org babel shell code snippets
   (require 'ob-kotlin)
   (org-babel-do-load-languages
    'org-babel-load-languages '((C . t)
@@ -323,6 +325,9 @@
   (setq org-default-notes-file (concat org-directory "/notes.org"))
   (setq org-journal-file (concat org-directory "/journal.org"))
   (setq org-quotations-file (concat org-directory "/quotations.org"))
+  ;; org-roam setup
+
+
   ;; global keybindings accessible in all other modes
   (global-set-key (kbd "C-c a") 'org-agenda) ; show agenda views
   (global-set-key (kbd "C-c c") 'org-capture)
@@ -355,6 +360,9 @@
            entry
            (file org-quotations-file)
            "* %U %^{Title}\n%?"))))
+
+;; (eval-after-load 'org-mode
+;;   '(push '("html" . web) org-src-lang-modes))
 
 ;; HYDRA FOR ORG-AGENDA
 (defun org-agenda-cts ()
@@ -398,6 +406,175 @@ _y_: ?y? year       _q_: quit           _L__l__c_: log = ?l?"
 (eval-after-load 'org-agenda
   '(progn
      (define-key org-agenda-mode-map "v" 'hydra-org-agenda-view/body)))
+
+
+
+;;;;;;;;;;;;;;;;;;;;; ORX-EXPORT CUSTOM BACKENDS ;;;;;;;;;;;;;;;;;;;;;
+
+(defun bst-org-plain-text-headline (headline contents info)
+  (message "bst----headline")
+  ;; (if (not (org-string-nw-p )))
+  ;; (format "headline contents: %s" (org-element-contents headline)))
+  ;; (format "headline info: %s" info))
+
+  "headline")
+  ;; ;; "headline21")
+  ;; ;; (get-text-property 0 :raw-value headline))
+  ;; (if (stringp headline)
+  ;;     (concat "FOUND A STRING: " (get-text-property 0 :title headline) "\n")
+  ;;   (format "not-string --> type=%s\nraw-value=%s\ncontents=%s\ninfo=%s\nheadline=%s"
+  ;;           (type-of headline)
+  ;;           ;; (cdr headline)
+  ;;           "raw" ;;(plist-get (plist-get headline 'headline) :raw-value)
+  ;;           contents
+  ;;           "info"
+  ;;           "headline")))
+
+(defun bst-org-plain-text-line-break (_line-break _contents _info)
+  "Transcode a LINE-BREAK object from Org to ASCII.
+CONTENTS is nil.  INFO is a plist holding contextual
+  information."
+  (message "bst-----line-break")
+  " ")
+
+(defun bst-org-plain-text-paragraph (paragraph contents info)
+  "Transcode a PARAGRAPH element from Org to ASCII.
+CONTENTS is the contents of the paragraph, as a string.  INFO is
+the plist used as a communication channel."
+                                        ;(replace-regexp-in-string "\\`[ \t]+" "" contents)
+  (message "bst----paragraph")
+  "paragraph")
+
+(defun bst-org-plain-text-plain-text (text info)
+  (let ((unwrapped (replace-regexp-in-string "\n" "" text)))
+    (message "bst----plain-text (text=%s)" unwrapped)
+    (format "PLAIN-TEXT: %s" unwrapped)))
+
+(defun bst-org-plain-text-section (section contents info)
+  (message "bst----section")
+  "section")
+  ;; (format "section contents: %s\nsection: %s" contents section))
+
+(defun bst-org-export-as-plain-text
+  (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to a text buffer.
+
+Export is done in a buffer named \"*Org PLAIN-TEXT Export*\", which
+will be displayed when `org-export-show-temporary-export-buffer'
+is non-nil."
+  (interactive)
+  (message "running bst-org-export-as-plain-text")
+  (org-export-to-buffer 'bst-plain-text "*Org PLAIN-TEXT Export*"
+    async subtreep visible-only body-only ext-plist (lambda () (text-mode))))
+
+;; CUSTOM PLAIN TEXT BACKEND FOR ORG-EXPORT
+;; very simple org-export backend - just removes word wrap
+;;
+;;
+;; HIERACHY OF ELEMENTS:
+;; headline
+;;   section
+;;     paragraph
+;;
+(add-hook 'org-mode-hook
+ (lambda ()
+   (org-export-define-backend
+    'bst-plain-text
+    ;; translation alist
+    '((headline . bst-org-plain-text-headline)
+      (line-break . bst-org-plain-text-line-break)
+      (paragraph . bst-org-plain-text-paragraph)
+      (plain-text . bst-org-plain-text-plain-text)
+      (section . bst-org-plain-text-section))
+    :menu-entry
+    '(?t 1
+	 ((?n "no word-wrap (DOESN'T WORK)"
+	      (lambda (a s v b)
+		(bst-org-export-as-plain-text))))))))
+
+
+
+;; ANOTHER GO AT IT
+
+(defun bst-org-export-unwrap-text (text backend info)
+  ;; (concat "TEXT = "
+  ;;         (replace-regexp-in-string "\n" " " text))
+  ;; )
+  ;; (concat "PLAIN>>>> " text))
+  (replace-regexp-in-string "\n" " " text))
+
+(defun bst-org-export-filter-para-headlines (text backend info)
+  "Remove any headline which has the tag :PARA: - It's contents
+will still be included.
+
+I created this filter so that I could use paragraph headings as
+an essay-writing technique and then automatically remove them at
+export."
+  (if (string-match ":PARA:" text)
+      ;; omit first line of text
+      (substring text (+ 1 (string-match "\n" text)))
+    text))
+
+(defun bst-org-export-as-org-no-wrap
+  (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to an Org buffer.
+
+No word-wrap in plain-text sections.
+
+Exclude headings with :PARA: tag (leaving their contents in)."
+  (interactive)
+  (org-export-to-buffer 'bst-org-no-wrap "*Org ORG Export*"
+    async subtreep visible-only body-only ext-plist (lambda () (org-mode))))
+
+;;;; org-export-before-processing-hook
+;;;; org-export-before-parsing-hook
+
+(add-hook 'org-mode-hook
+	  (lambda ()
+            (org-export-define-derived-backend 'bst-org-no-wrap 'org
+              :menu-entry
+              '(?O 1
+                   ((?n "As Org buffer (no word-wrap/exclude :PARA: headings)"
+                        (lambda (a s v b)
+                          (bst-org-export-as-org-no-wrap)))))
+              ;; :translate-alist
+              ;; '()
+              :filters-alist
+              '((:filter-plain-text . bst-org-export-unwrap-text)
+                (:filter-headline . bst-org-export-filter-para-headlines)))
+            ))
+
+(defun bst-org-no-wrap-headline (headline contents info)
+  (message "bst-org-no-wrap-headline")
+  ;; (if (not (org-string-nw-p )))
+  ;; (format "headline contents: %s" (org-element-contents headline)))
+  ;; (format "headline info: %s" info))
+  ;; "headline")
+  (let* ((title (org-ascii--build-title headline info 10 nil))
+         (body (replace-regexp-in-string "\\(.\\)\n\\(.\\)" "\\1 \\2" contents)))
+    (concat title "\n\n" body)))
+
+(defun bst-org-export-as-ascii-no-wrap
+  (&optional async subtreep visible-only body-only ext-plist)
+  (interactive)
+  (org-export-to-buffer 'bst-org-ascii-no-wrap "*Org ASCII Export*"
+    async subtreep visible-only body-only ext-plist (lambda () (text-mode))))
+
+(add-hook 'org-mode-hook
+;; (add-hook 'org-export-before-processing-hook
+ (lambda ()
+   (org-export-define-derived-backend 'bst-org-ascii-no-wrap 'ascii
+				      :menu-entry
+				      '(?t 1
+					   ((?N "As ASCII buffer (no word-wrap) (WORK IN PROGRESS)"
+						(lambda (a s v b)
+						  (bst-org-export-as-ascii-no-wrap)))))
+				      :translate-alist
+				      '((headline . bst-org-no-wrap-headline)
+					;; (plain-text . bst-org-no-wrap-plain-text)
+					)
+				      :filters-alist
+				      '((:filter-plain-text . bst-org-export-unwrap-text)))))
 
 
 
