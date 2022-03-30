@@ -13,6 +13,29 @@
 (use-package hydra
   :ensure t)
 
+;; JUMP TO DEFINITION: dumb-jump works for 50+ programming languages
+;; with no config required.
+;;
+;; Uses uses ag, rg or grep behind the scenes - make sure that ag is
+;; installed on system for good performance:
+;; $ sudo apt-get install silversearcher-ag
+(use-package dumb-jump
+  :ensure t
+  :config
+  ;; use dumb-jump as backend for xref
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  ;; a selection of useful commands
+  (defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
+  (global-set-key (kbd "C-M-,") 'dumb-jump-hydra/body))
+
 (use-package shrink-whitespace
   :ensure t
   :bind (("M-\\" . shrink-whitespace)
@@ -290,6 +313,7 @@
 
 ;; KOTLIN
 (use-package kotlin-mode
+  :disabled
   :ensure t)
 
 ;; SCALA
@@ -305,6 +329,10 @@
 (use-package js
   :config
   (setf js-indent-level 2))
+
+;; GLSL
+(use-package glsl-mode
+  :ensure t)
 
 
 
