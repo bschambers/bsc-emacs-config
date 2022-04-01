@@ -98,6 +98,34 @@ bsc-nonstandard-symbol-substitution-table."
 
 
 
+;;;;;;;;;;;;;;;;;;; DIRED: show/hide hidden files ;;;;;;;;;;;;;;;;;;;;
+
+(setq bs-dired-ls-mode 0)
+
+(defun bs-set-dired-switches (switches description)
+  (dired-sort-other switches)
+  (message "ls switches = %s --> %s" switches description))
+
+(defun bs-dired-cycle-hidden ()
+  "Cycle between different file-visibility modes by changing
+which ls switches dired uses."
+  (interactive)
+  ;; add 1 each time till we cycle back to zero
+  (setq bs-dired-ls-mode (1+ bs-dired-ls-mode))
+  (if (> bs-dired-ls-mode 1)
+      (setq bs-dired-ls-mode 0))
+  (cond
+   ((= bs-dired-ls-mode 0) (bs-set-dired-switches "-al" "(default) show all"))
+   ((= bs-dired-ls-mode 1) (bs-set-dired-switches "-lB" "hide hidden files"))))
+
+(eval-after-load 'dired
+  '(progn
+     ;; 'h' bound to help by default - same as `C-h m'
+     (define-key dired-mode-map (kbd "h") nil)
+     (define-key dired-mode-map (kbd "h") 'bs-dired-cycle-hidden)))
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;; SEPARATOR COMMENTS ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun insert-separator-comment-generic (label start-str pad-char end-str)
