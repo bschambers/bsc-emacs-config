@@ -1,25 +1,64 @@
 #+title: B. S. Tancham - My Emacs Configuration
 
-* Emacs Setup
+* New Emacs Setup
 
-The default init file is here:
+Clone this repository into dir:
 
-#+BEGIN_SRC elisp
-~/.emacs.d/init.el
-#+END_SRC
+: ~/.emacs.d/init
 
-It contains only one line - to load my actual init file, which is stored in a
-version controlled directory:
+Create init file in the default location:
+
+: ~/.emacs.d/init.el
+
+Init file contains one line only:
 
 #+BEGIN_SRC elisp
 (load-file "~/.emacs.d/init/init.el")
 #+END_SRC
 
-This file loads all of the other config files, and also loads another file which
-does private config (email setup etc) and is not under version control.
+This loads my actual init file, which is in the version controlled
+directory. That file loads all of the other config files.
 
-* Snippets Collection
+* Setup Snippets Collection
 
 Clone the snippets repository: https://github.com/bstancham/bs-emacs-snippets
 
 Put snippets in ~/.emacs.d/snippets
+
+* Setup Private Configuration
+
+The main init file also loads another file which does private config (email
+setup etc) and is not under version control.
+
+Put any private configuration in this file:
+
+: ~/.emacs.d/init-private/init-private.el
+
+If this file exists then it will be loaded.
+
+** Sample Private Init File
+#+BEGIN_SRC elisp
+;; sending email is configured here - receiving email is configured in ~/.gnus
+;; (setq gnus-site-init-file "~/.emacs.d/init-bsc/gnus-config.el")
+
+;; NOTE: account login details are in ~/.authinfo - the format is like this...
+;; machine mail3.gridhost.co.uk login ben@bschambers.info password PASSWORD
+
+;; ~/.authinfo should be encrypted (~/.authinfo.gpg) or at least owned by root
+
+;; needs to be specified before the requiring smtpmail
+(setq smtpmail-default-smtp-server "smtpserver")
+(require 'smtpmail)
+(setq send-mail-function 'smtpmail-send-it)
+
+;; default mail identity (joe@joebloggs.com)
+(setq user-full-name "Joe Bloggs"
+      smtpmail-local-domain "joebloggs.com"
+      user-mail-address (concat "joe@" smtpmail-local-domain))
+
+;; sending mail (EXAMPLE SETUP - look for instructions from webhost)
+(setq smtpmail-smtp-server "smtp.server.address"
+      smtpmail-smtp-service 465
+      smtpmail-stream-type 'ssl ; otherwise my host won't let me use the secure port 465
+      smtpmail-smtp-user user-mail-address)
+#+END_SRC
