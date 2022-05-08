@@ -19,11 +19,31 @@ Init file contains one line only:
 This loads my actual init file, which is in the version controlled
 directory. That file loads all of the other config files.
 
+** Installing use-package
+
+If emacs is restarted at this point, it will crash because use-package is not
+installed!
+
+Eval this line to add the melpa package archive:
+
+#+BEGIN_SRC elisp
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+#+END_SRC
+
+Install use-package:
+
+: M-x package-install <RET> use-package
+
+Now restart emacs and use-package should download and install all other required
+packages.
+
 * Setup Snippets Collection
 
 Clone the snippets repository: https://github.com/bstancham/bs-emacs-snippets
 
-Put snippets in ~/.emacs.d/snippets
+Put snippets here:
+
+: ~/.emacs.d/snippets
 
 * Setup Private Configuration
 

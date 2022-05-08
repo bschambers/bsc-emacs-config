@@ -23,7 +23,8 @@
 (package-initialize) ; required before use-package will work
 ;; use package is great because it will automatically fetch and
 ;; install packages which are not already present
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 ;; unset C- and M- digit keys
 ;; ... can still use C-M-<DIGIT> for numeric prefix...
