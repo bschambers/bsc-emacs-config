@@ -1,4 +1,6 @@
-* B. S. Tancham - my emacs configuration
+#+title: B. S. Tancham - My Emacs Configuration
+
+* Emacs Setup
 
 The default init file is here:
 
@@ -15,3 +17,9 @@ version controlled directory:
 
 This file loads all of the other config files, and also loads another file which
 does private config (email setup etc) and is not under version control.
+
+* Snippets Collection
+
+Clone the snippets repository: https://github.com/bstancham/bs-emacs-snippets
+
+Put snippets in ~/.emacs.d/snippets
