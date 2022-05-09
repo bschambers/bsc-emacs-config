@@ -58,13 +58,13 @@ If this file exists then it will be loaded.
 
 ** Sample Private Init File
 #+BEGIN_SRC elisp
-;; sending email is configured here - receiving email is configured in ~/.gnus
-;; (setq gnus-site-init-file "~/.emacs.d/init-bsc/gnus-config.el")
+;;;; SENDING EMAIL
 
 ;; NOTE: account login details are in ~/.authinfo - the format is like this...
-;; machine mail3.gridhost.co.uk login ben@bschambers.info password PASSWORD
+;; (look up documentation from host for email smtp server address)
+;; machine smtp.server.address login joe@joebloggs.com password PASSWORD
 
-;; ~/.authinfo should be encrypted (~/.authinfo.gpg) or at least owned by root
+;; IMPORTANT! ~/.authinfo should be encrypted (~/.authinfo.gpg)
 
 ;; needs to be specified before the requiring smtpmail
 (setq smtpmail-default-smtp-server "smtpserver")
@@ -76,7 +76,7 @@ If this file exists then it will be loaded.
       smtpmail-local-domain "joebloggs.com"
       user-mail-address (concat "joe@" smtpmail-local-domain))
 
-;; sending mail (EXAMPLE SETUP - look for instructions from webhost)
+;; sending mail (EXAMPLE SETUP - look for instructions from email server host)
 (setq smtpmail-smtp-server "smtp.server.address"
       smtpmail-smtp-service 465
       smtpmail-stream-type 'ssl ; otherwise my host won't let me use the secure port 465
