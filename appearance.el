@@ -3,9 +3,12 @@
 (use-package cyberpunk-theme
   :ensure t)
 
-(defvar *bsc-themes-by-darkness* '(leuven         ; GOOD
+(use-package leuven-theme
+  :ensure t)
+
+(defvar *bsc-themes-by-darkness* '(leuven         ; FAVOURITE (white bg, good sensible colours, good mode support (org, minibuffer, completions etc))
                                    whiteboard
-                                   dichromacy     ; FAVOURITE  (white bg, high contrast)
+                                   dichromacy     ; FAVOURITE (white bg, high contrast)
                                    moe-light      ; FAVOURITE (pale bg, cute colours)
                                    alect-light    ; GOOD (cream bg)
                                    misterioso     ; grey-blue bg
@@ -21,7 +24,7 @@
                                    paganini       ; GOOD (high contrast, dark bg)
                                    cherry-blossom ; GOOD (high contrast, dark bg)
                                    toxi           ; GOOD (garish colours, dark bg)
-                                   cyberpunk)     ; FAVOURITE
+                                   cyberpunk)     ; FAVOURITE (black bg, bright colours high contrast)
   "list of themes ordered from light to dark")
 
 (defun bsc-disable-all-themes ()
@@ -95,7 +98,7 @@
       ;; day time
       (progn
         (message "day time: loading light theme")
-        (load-theme 'dichromacy))
+        (load-theme 'leuven))
     ;; night time
     (progn
       (message "night time: loading dark theme")
