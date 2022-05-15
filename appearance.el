@@ -1,10 +1,59 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;; THEME MANAGEMENT ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;; THEMES SETUP AND CUSTOMIZATIONS ;;;;
+
 (use-package cyberpunk-theme
-  :ensure t)
+  :ensure t
+  :init
+  (eval-after-load 'cyberpunk-theme
+    (lambda ()
+      (face-spec-set 'minibuffer-line '((t :foreground "green"
+                                           :background "black")))
+      (face-spec-set 'hl-line '((t :background "gray13"))))))
 
 (use-package leuven-theme
-  :ensure t)
+  :ensure t
+  :init
+  (eval-after-load 'leuven-theme
+    (lambda ()
+      (face-spec-set 'minibuffer-line '((t :foreground "blue"
+                                           :background "white")))
+      (face-spec-set 'hl-line '((t :inherit unspecified
+                               :background "light cyan"))))))
+
+(eval-after-load 'dichromacy-theme
+  (lambda ()
+    (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
+                                         :background "white")))
+    (face-spec-set 'hl-line '((t :inherit unspecified
+                                 :background "light cyan")))))
+
+(eval-after-load 'moe-light-theme
+  (lambda ()
+    ;; (face-spec-set 'region '((t :inherit unspecified
+    ;;                             :foreground unspecified
+    ;;                             :background "yellow")))
+    (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
+                                         :background "#fdfde7")))
+    (face-spec-set 'hl-line '((t :inherit unspecified
+                                 :background "light cyan")))))
+
+(eval-after-load 'moe-dark-theme
+  (lambda ()
+    ;; (face-spec-set 'region '((t :inherit unspecified
+    ;;                             :foreground unspecified
+    ;;                             :background "#224455")))
+    (face-spec-set 'minibuffer-line '((t :foreground "#ff4ea3"
+                                         :background "#303030")))
+    (face-spec-set 'hl-line '((t :inherit unspecified
+                                 :background "gray13")))))
+
+(eval-after-load 'whiteboard-theme
+  (lambda ()
+    (face-spec-set
+     'hl-line '((t :background "white")))))
+
+;;;; THEME-SWITCHING UTILITIES ;;;;
 
 (defvar *bsc-themes-by-darkness* '(leuven         ; FAVOURITE (white bg, good sensible colours, good mode support (org, minibuffer, completions etc))
                                    whiteboard
@@ -45,49 +94,7 @@
             ;; ... otherwise we're just passing a string
             :action (lambda (x) (load-theme (intern x)))))
 
-;;;; PERSONAL THEME CUSTOMIZATIONS ;;;;
-
-(eval-after-load 'cyberpunk-theme
-  (lambda ()
-    (face-spec-set 'minibuffer-line '((t :foreground "green"
-                                         :background "black")))
-    (face-spec-set 'hl-line '((t :background "gray13")))))
-
-(eval-after-load 'dichromacy-theme
-  (lambda ()
-    (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
-                                         :background "white")))
-    (face-spec-set 'hl-line '((t :inherit unspecified
-                                 :background "light cyan")))))
-
-(eval-after-load 'moe-light-theme
-  (lambda ()
-    ;; (face-spec-set 'region '((t :inherit unspecified
-    ;;                             :foreground unspecified
-    ;;                             :background "yellow")))
-    (face-spec-set 'minibuffer-line '((t :foreground "dark violet"
-                                         :background "#fdfde7")))
-    (face-spec-set 'hl-line '((t :inherit unspecified
-                                 :background "light cyan")))))
-
-(eval-after-load 'moe-dark-theme
-  (lambda ()
-    ;; (face-spec-set 'region '((t :inherit unspecified
-    ;;                             :foreground unspecified
-    ;;                             :background "#224455")))
-    (face-spec-set 'minibuffer-line '((t :foreground "#ff4ea3"
-                                         :background "#303030")))
-    (face-spec-set 'hl-line '((t :inherit unspecified
-                                 :background "gray13")))))
-
-(eval-after-load 'whiteboard-theme
-  (lambda ()
-    (face-spec-set
-     'hl-line '((t :background "white")))))
-
-;;(load-theme 'cyberpunk)
-
-;; load theme on startup
+;;;; LOAD THEME ON STARTUP ;;;;
 ;; light or dark theme depending on time of day
 ;; TODO: maybe measure light level from webcam
 
@@ -103,6 +110,8 @@
     (progn
       (message "night time: loading dark theme")
       (load-theme 'cyberpunk))))
+
+;;(load-theme 'cyberpunk)
 
 ;;;;;;;;;;;;;;;;;;; MISC APPEARANCE RELATED THINGS ;;;;;;;;;;;;;;;;;;;
 
