@@ -2,15 +2,6 @@
 
 ;;;; THEMES SETUP AND CUSTOMIZATIONS ;;;;
 
-(use-package cyberpunk-theme
-  :ensure t
-  :init
-  (eval-after-load 'cyberpunk-theme
-    (lambda ()
-      (face-spec-set 'minibuffer-line '((t :foreground "green"
-                                           :background "black")))
-      (face-spec-set 'hl-line '((t :background "gray13"))))))
-
 (use-package leuven-theme
   :ensure t
   :init
@@ -19,7 +10,12 @@
       (face-spec-set 'minibuffer-line '((t :foreground "blue"
                                            :background "white")))
       (face-spec-set 'hl-line '((t :inherit unspecified
-                               :background "light cyan"))))))
+                                   :background "light cyan"))))))
+
+(eval-after-load 'whiteboard-theme
+  (lambda ()
+    (face-spec-set 'hl-line '((t :inherit unspecified
+                                 :background "white")))))
 
 (eval-after-load 'dichromacy-theme
   (lambda ()
@@ -48,33 +44,41 @@
     (face-spec-set 'hl-line '((t :inherit unspecified
                                  :background "gray13")))))
 
-(eval-after-load 'whiteboard-theme
-  (lambda ()
-    (face-spec-set
-     'hl-line '((t :background "white")))))
+(use-package cyberpunk-theme
+  :ensure t
+  :init
+  (eval-after-load 'cyberpunk-theme
+    (lambda ()
+      (face-spec-set 'minibuffer-line '((t :foreground "green"
+                                           :background "black")))
+      (face-spec-set 'hl-line '((t :inherit unspecified
+                                   :background "gray13"))))))
 
 ;;;; THEME-SWITCHING UTILITIES ;;;;
 
-(defvar *bsc-themes-by-darkness* '(leuven         ; FAVOURITE (white bg, good sensible colours, good mode support (org, minibuffer, completions etc))
-                                   whiteboard
-                                   dichromacy     ; FAVOURITE (white bg, high contrast)
-                                   moe-light      ; FAVOURITE (pale bg, cute colours)
-                                   alect-light    ; GOOD (cream bg)
-                                   misterioso     ; grey-blue bg
-                                   moe-dark       ; FAVOURITE (mid-grey bg, nice colours, ok contrast)
-                                   ample-flat     ; mid-tones, low-contrast, greyish
-                                   tango-dark
-                                   flatland
-                                   tsdh-dark      ; GOOD
-                                   material
-                                   monokai        ; GOOD (TODO: selection/hl-line)
-                                   dracula        ; GOOD (purplish) (TODO: selection)
-                                   deeper-blue    ; GOOD (TODO: selection/hl-line)
-                                   paganini       ; GOOD (high contrast, dark bg)
-                                   cherry-blossom ; GOOD (high contrast, dark bg)
-                                   toxi           ; GOOD (garish colours, dark bg)
-                                   cyberpunk)     ; FAVOURITE (black bg, bright colours high contrast)
-  "list of themes ordered from light to dark")
+(defvar *bsc-themes-by-darkness* '("leuven         ; (FAVOURITE) light-theme, white bg, sensible colours"
+                                   "whiteboard     ; light-theme, off-white bg, muted colour palette"
+                                   "dichromacy     ; light-theme, white bg, high contrast"
+                                   "moe-light      ; light-theme, pale bg, super-cute candy colours"
+                                   "alect-light    ; light-theme, cream bg, low-contrast, easy on the eyes"
+                                   "misterioso     ; mid-theme, grey-blue bg, jewel tones"
+                                   "moe-dark       ; mid-theme, mid-grey bg, nice colours, ok contrast"
+                                   "ample-flat     ; mid-theme, mid-tones, low-contrast, greyish"
+                                   "tango-dark     ; mid-theme, dark-grey bg, rich colours (jewel tones)"
+                                   "tsdh-dark      ; mid-theme, 1970s, brownish & orange vibes"
+                                   "material       ; mid-theme, dark bluish-grey bg"
+                                   "flatland       ; mid-theme, tasteful, dark-grey bg"
+                                   "monokai        ; mid-theme, 1970s, brown & yellow vibes"
+                                   "dracula        ; mid-theme, purplish"
+                                   "deeper-blue    ; mid/dark-theme, dark-blue bg"
+                                   "paganini       ; mid/dark-theme, 1970s, grey & blue with orange & green touches"
+                                   "toxi           ; dark-theme, dark bg, high contrast, garish colours, toxic green, yellow & red, purple selection"
+                                   "cherry-blossom ; dark-theme, dark bg, high contrast, jewel tones (purple & pink)"
+                                   "cyberpunk      ; (FAVOURITE) dark-theme, black bg, high contrast, bright colours"
+                                   )
+  "list of themes ordered from light to dark. Each entry is the
+  theme name, followed by at least one space and then a short
+  description.")
 
 (defun bsc-disable-all-themes ()
   "Disables all currently enabled themes"
@@ -90,9 +94,12 @@
   (interactive)
   (ivy-read "Switch to theme (arranged light to dark):"
             *bsc-themes-by-darkness*
-            ;; INTERN gets the SYMBOL whose name is X
-            ;; ... otherwise we're just passing a string
-            :action (lambda (x) (load-theme (intern x)))))
+            :action (lambda (x)
+                      ;; separate theme name from description
+                      (let ((theme-name (car (split-string x " "))))
+                        ;; INTERN gets the SYMBOL whose name is X
+                        ;; ... otherwise we're just passing a string
+                        (load-theme (intern theme-name))))))
 
 ;;;; LOAD THEME ON STARTUP ;;;;
 ;; light or dark theme depending on time of day
