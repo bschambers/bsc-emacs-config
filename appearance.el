@@ -56,29 +56,35 @@
 
 ;;;; THEME-SWITCHING UTILITIES ;;;;
 
-(defvar *bsc-themes-by-darkness* '("leuven         ; (FAVOURITE) light-theme, white bg, sensible colours"
-                                   "whiteboard     ; light-theme, off-white bg, muted colour palette"
-                                   "dichromacy     ; light-theme, white bg, high contrast"
-                                   "moe-light      ; light-theme, pale bg, super-cute candy colours"
-                                   "alect-light    ; light-theme, cream bg, low-contrast, easy on the eyes"
-                                   "misterioso     ; mid-theme, grey-blue bg, jewel tones"
-                                   "moe-dark       ; mid-theme, mid-grey bg, nice colours, ok contrast"
-                                   "ample-flat     ; mid-theme, mid-tones, low-contrast, greyish"
-                                   "tango-dark     ; mid-theme, dark-grey bg, rich colours (jewel tones)"
-                                   "tsdh-dark      ; mid-theme, 1970s, brownish & orange vibes"
-                                   "material       ; mid-theme, dark bluish-grey bg"
-                                   "flatland       ; mid-theme, tasteful, dark-grey bg"
-                                   "monokai        ; mid-theme, 1970s, brown & yellow vibes"
-                                   "dracula        ; mid-theme, purplish"
-                                   "deeper-blue    ; mid/dark-theme, dark-blue bg"
-                                   "paganini       ; mid/dark-theme, 1970s, grey & blue with orange & green touches"
-                                   "toxi           ; dark-theme, dark bg, high contrast, garish colours, toxic green, yellow & red, purple selection"
-                                   "cherry-blossom ; dark-theme, dark bg, high contrast, jewel tones (purple & pink)"
-                                   "cyberpunk      ; (FAVOURITE) dark-theme, black bg, high contrast, bright colours"
-                                   )
+(defvar *bsc-themes-by-darkness*
+  '("leuven         ; light-theme, white bg, sensible colours"
+    "whiteboard     ; light-theme, off-white bg, muted colour palette"
+    "dichromacy     ; light-theme, white bg, high contrast"
+    "moe-light      ; light-theme, pale bg, super-cute candy colours"
+    "alect-light    ; light-theme, cream bg, low-contrast, easy on the eyes"
+    "misterioso     ; mid-theme, grey-blue bg, jewel tones"
+    "moe-dark       ; mid-theme, mid-grey bg, nice colours, ok contrast"
+    "ample-flat     ; mid-theme, mid-tones, low-contrast, greyish"
+    "tango-dark     ; mid-theme, dark-grey bg, rich colours (jewel tones)"
+    "tsdh-dark      ; mid-theme, 1970s, brownish & orange vibes"
+    "material       ; mid-theme, dark bluish-grey bg"
+    "flatland       ; mid-theme, tasteful, dark-grey bg"
+    "monokai        ; mid-theme, 1970s, brown & yellow vibes"
+    "dracula        ; mid-theme, purplish"
+    "deeper-blue    ; mid/dark-theme, dark-blue bg"
+    "paganini       ; mid/dark-theme, 1970s, grey & blue with orange & green touches"
+    "toxi           ; dark-theme, dark bg, high contrast, garish colours, toxic green, yellow & red, purple selection"
+    "cherry-blossom ; dark-theme, dark bg, high contrast, jewel tones (purple & pink)"
+    "cyberpunk      ; dark-theme, black bg, high contrast, bright colours")
   "list of themes ordered from light to dark. Each entry is the
   theme name, followed by at least one space and then a short
   description.")
+
+(defvar bsc-theme-light 'leuven "Preferred light theme.")
+
+(defvar bsc-theme-dark 'cyberpunk "Preferred dark theme.")
+
+(defvar bsc-theme-current bsc-theme-light)
 
 (defun bsc-disable-all-themes ()
   "Disables all currently enabled themes"
@@ -86,8 +92,13 @@
   (mapc #'disable-theme custom-enabled-themes))
 
 (defadvice load-theme (before theme-dont-propogate activate)
-  "disable other theme before loading new one"
+  "Disable other theme before loading new one. Default behaviour
+allows multiple themes to be loaded simultaneously."
   (bsc-disable-all-themes))
+
+(defun bsc-load-theme (theme)
+  (load-theme theme)
+  (setq bsc-theme-current theme))
 
 (defun bsc-choose-theme ()
   "Switches theme, prompting user to choose from a pre-determined list."
@@ -99,26 +110,29 @@
                       (let ((theme-name (car (split-string x " "))))
                         ;; INTERN gets the SYMBOL whose name is X
                         ;; ... otherwise we're just passing a string
-                        (load-theme (intern theme-name))))))
+                        (bsc-load-theme (intern theme-name))))))
+
+(defun bsc-theme-toggle ()
+  "Switches between preferred light and dark themes."
+  (interactive)
+  (if (eq bsc-theme-current bsc-theme-light)
+      (bsc-load-theme bsc-theme-dark)
+    (bsc-load-theme bsc-theme-light)))
 
 ;;;; LOAD THEME ON STARTUP ;;;;
 ;; light or dark theme depending on time of day
 ;; TODO: maybe measure light level from webcam
-
-;; load light or dark theme based on time of day
 (let ((hour (string-to-number (format-time-string "%H"))))
   (if
       (and (>= hour 6) (< hour 18))
       ;; day time
       (progn
         (message "day time: loading light theme")
-        (load-theme 'leuven))
+        (bsc-load-theme bsc-theme-light))
     ;; night time
     (progn
       (message "night time: loading dark theme")
-      (load-theme 'cyberpunk))))
-
-;;(load-theme 'cyberpunk)
+      (bsc-load-theme bsc-theme-dark))))
 
 ;;;;;;;;;;;;;;;;;;; MISC APPEARANCE RELATED THINGS ;;;;;;;;;;;;;;;;;;;
 
@@ -131,8 +145,8 @@
 (use-package fill-column-indicator
   :ensure t)
 
-;; keep track of the cursor, but not in terminal mode because it tends to
-;; obscure the text of the current line
+;; use hl-line to keep track of the cursor, but not in terminal mode because it
+;; tends to obscure the text of the current line
 (if (display-graphic-p) ; returns nil if running in terminal mode
     (progn
       ;; hilight line where the active cursor is
