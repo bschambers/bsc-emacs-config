@@ -342,6 +342,8 @@
   :ensure t
   :config
   (setq org-log-done 'time) ; insert timestamp when TODO is DONE
+  ;; do not indent text with org-demote-subtree
+  (setq org-adapt-indentation nil)
   ;; make windmove work in areas where there is no special functionality on S-<cursor>
   (add-hook 'org-shiftup-final-hook    'windmove-up)
   (add-hook 'org-shiftdown-final-hook  'windmove-down)
